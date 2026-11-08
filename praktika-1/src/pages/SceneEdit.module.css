@@ -1,0 +1,186 @@
+.form,
+.missing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  width: 100%;
+}
+
+.missing p,
+.hint {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.92rem;
+}
+
+.missing h2 {
+  font-family: var(--cond);
+  font-weight: 600;
+  font-size: 1.45rem;
+  letter-spacing: -0.03em;
+}
+
+.field,
+.devices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: 500;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.field textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.error {
+  color: var(--danger);
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+
+.spare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.spareField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.spareField select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 40px 0 14px;
+  border: 0;
+  border-radius: 12px;
+  appearance: none;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%231a2c30' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 12px 8px;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.spareField select:hover {
+  background-color: #dfe8e6;
+}
+
+.spareField select:active {
+  background-color: #d3dedc;
+  transform: translateY(1px);
+}
+
+.devices ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.devices li {
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.pick,
+.pickOn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.pick input,
+.pickOn input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--on);
+}
+
+.pick span,
+.pickOn span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pick b,
+.pickOn b {
+  font-family: var(--cond);
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+}
+
+.pick small,
+.pickOn small {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 0 14px 12px;
+}
+
+.controls > span {
+  color: var(--on);
+  font-weight: 500;
+}
+
+.level {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 500;
+}
+
+.level input {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--on);
+}
+
+.form button[type="submit"],
+.form .btn-danger {
+  width: 100%;
+}

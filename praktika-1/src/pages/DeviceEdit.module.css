@@ -1,0 +1,27 @@
+.layout,
+.aside,
+.missing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.layout {
+  align-items: stretch;
+  gap: 28px;
+  width: 100%;
+}
+
+.aside {
+  color: var(--muted);
+}
+
+.aside h2,
+.missing h2 {
+  font-family: var(--cond);
+  font-weight: 600;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}

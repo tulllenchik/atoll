@@ -1,0 +1,149 @@
+.page {
+  padding-bottom: 72px;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intro h1 {
+  font-family: var(--cond);
+  font-weight: 600;
+  font-size: 2.1rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.intro p,
+.empty {
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.card,
+.cardOn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 148px;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.apply {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-height: 104px;
+  padding: 14px 14px 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0 6px 6px;
+  padding: 0 8px;
+  color: var(--on);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.cardOn .edit {
+  color: #f4faf8;
+}
+
+.add {
+  position: fixed;
+  z-index: 5;
+  left: max(16px, calc(50vw - 220px + 16px));
+  bottom: calc(78px + env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #0e3f3c;
+  background-image: url("../assets/images/button-fill.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #f4faf8;
+  box-shadow: 0 8px 18px rgb(27 69 66 / 28%);
+  text-decoration: none;
+  transition: filter 160ms ease, transform 160ms ease;
+}
+
+.add:hover {
+  filter: brightness(1.14);
+}
+
+.add:active {
+  filter: brightness(0.84);
+  transform: translateY(1px);
+}
+
+.card,
+.cardOn,
+.apply {
+  transition: filter 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.card:hover {
+  background: #dfe8e6;
+}
+
+.card:active {
+  background: #d3dedc;
+  transform: translateY(1px);
+}
+
+.cardOn {
+  background-color: #0e3f3c;
+  background-image: url("../assets/images/button-fill.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #f4faf8;
+}
+
+.cardOn:hover {
+  filter: brightness(1.14);
+}
+
+.cardOn:active {
+  filter: brightness(0.84);
+  transform: translateY(1px);
+}
+
+.apply b {
+  font-family: var(--cond);
+  font-weight: 600;
+  font-size: 1.45rem;
+  letter-spacing: -0.03em;
+}
+
+.apply span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.cardOn .apply span {
+  color: #d7ebe4;
+}

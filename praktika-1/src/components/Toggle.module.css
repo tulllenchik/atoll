@@ -1,0 +1,28 @@
+.switch {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  width: 44px;
+  height: 26px;
+  padding: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: #d3dedc;
+  cursor: pointer;
+}
+
+.switch span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.18s ease;
+}
+
+.on {
+  background: var(--on);
+}
+
+.on span {
+  transform: translateX(18px);
+}

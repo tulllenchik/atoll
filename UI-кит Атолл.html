@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Набор частей — Атолл</title>
+  <link rel="icon" href="praktika-1/public/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Condensed:wght@600&family=Sofia+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #e7efec;
+      --bg-deep: #d5e1dc;
+      --surface: #ffffff;
+      --lit: #dceae6;
+      --ink: #1a2c30;
+      --muted: #3e5558;
+      --on: #1b4542;
+      --danger: #9c3b32;
+      --paper: #f4faf8;
+      --fill: url("praktika-1/src/assets/images/button-fill.png");
+      --sans: "Sofia Sans", "Segoe UI", sans-serif;
+      --cond: "Sofia Sans Condensed", "Sofia Sans", "Segoe UI", sans-serif;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    html { background: var(--bg-deep); }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--surface);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    img { display: block; max-width: 100%; }
+    button, input, textarea, select { font: inherit; color: inherit; }
+    h1, h2, p { margin: 0; }
+
+    :focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    .sheet {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 80px;
+    }
+
+    .mast h1 {
+      font-family: var(--cond);
+      font-weight: 600;
+      font-size: 34px;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .mast p {
+      max-width: 38em;
+      margin-top: 12px;
+      color: var(--muted);
+    }
+
+    .colors {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 36px;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 88px;
+      padding: 12px 14px;
+      border-radius: 16px;
+    }
+
+    .swatch b {
+      font-family: var(--cond);
+      font-weight: 600;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .swatch span { font-size: 14px; }
+
+    .edge { box-shadow: inset 0 0 0 1px rgb(26 44 48 / 14%); }
+
+    .pair {
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: 8px 36px;
+      align-items: start;
+      margin-top: 36px;
+    }
+
+    .note h2 {
+      font-family: var(--cond);
+      font-weight: 600;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .note p {
+      margin-top: 8px;
+      color: var(--muted);
+      max-width: 34em;
+    }
+
+    .stage {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--bg);
+    }
+
+    .stage-tight { gap: 10px; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .brand img:first-child { width: 32px; height: 32px; }
+    .brand img:last-child { width: auto; height: 16px; margin-left: 8px; }
+
+    .back {
+      min-height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .home-name {
+      font-family: var(--cond);
+      font-weight: 600;
+      font-size: 34px;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .quiet { color: var(--muted); font-size: 16px; }
+
+    .switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .mode {
+      min-height: 44px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .mode:hover { background: #dfe8e6; color: var(--ink); }
+    .mode:active { background: #d3dedc; transform: translateY(1px); }
+
+    .mode.on {
+      background-color: #0e3f3c;
+      background-image: var(--fill);
+      background-position: center;
+      background-size: cover;
+      color: var(--paper);
+      font-weight: 600;
+    }
+
+    .mode.on:hover { filter: brightness(1.14); }
+    .mode.on:active { filter: brightness(0.84); }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 72px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: var(--surface);
+    }
+
+    .row b {
+      font-family: var(--cond);
+      font-weight: 600;
+      font-size: 23px;
+      letter-spacing: -0.03em;
+    }
+
+    .row span {
+      color: var(--muted);
+      font-size: 15px;
+      text-align: right;
+    }
+
+    .row.on {
+      background-color: #0e3f3c;
+      background-image: var(--fill);
+      background-position: center;
+      background-size: cover;
+      color: var(--paper);
+    }
+
+    .row.on span { color: #d7ebe4; }
+    .row:not(.on):hover { background: #dfe8e6; }
+    .row:not(.on):active { background: #d3dedc; transform: translateY(1px); }
+    .row.on:hover { filter: brightness(1.14); }
+    .row.on:active { filter: brightness(0.84); transform: translateY(1px); }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 72px;
+      padding: 10px 12px 10px 16px;
+      border-radius: 16px;
+      background: var(--surface);
+    }
+
+    .item b {
+      display: block;
+      font-family: var(--cond);
+      font-weight: 600;
+      font-size: 21px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .item .fact { color: var(--muted); font-size: 15px; }
+    .item .fact.live { color: var(--on); }
+    .item .grow { flex: 1; min-width: 0; }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      width: 44px;
+      height: 26px;
+      padding: 2px;
+      border: 0;
+      border-radius: 999px;
+      background: #d3dedc;
+      cursor: pointer;
+    }
+
+    .switch i {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.18s ease;
+    }
+
+    .switch.on { background: var(--on); }
+    .switch.on i { transform: translateX(18px); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background-color: #0e3f3c;
+      background-image: var(--fill);
+      background-position: center;
+      background-size: cover;
+      color: var(--paper);
+    }
+
+    .btn.ghost { color: var(--muted); }
+    .btn.danger { color: var(--danger); }
+
+    .states {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .states .btn { width: 100%; padding: 0 8px; }
+    .frozen { pointer-events: none; }
+
+    .primary.hover,
+    .row.on.hover,
+    .mode.on.hover,
+    .plus.hover,
+    .tabs .on.hover { filter: brightness(1.14); }
+
+    .primary.active,
+    .row.on.active,
+    .mode.on.active,
+    .plus.active,
+    .tabs .on.active {
+      filter: brightness(0.84);
+      transform: translateY(1px);
+    }
+
+    .ghost.hover,
+    .mode.hover-frozen { background: #dfe8e6; color: var(--ink); }
+    .ghost.active { background: #d3dedc; color: var(--ink); transform: translateY(1px); }
+    .danger.hover { background: #f3e4e2; }
+    .danger.active { background: #ead5d2; transform: translateY(1px); }
+
+    .state-name {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .live {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn.primary:hover { filter: brightness(1.14); }
+    .btn.primary:active { filter: brightness(0.84); transform: translateY(1px); }
+    .btn.ghost:hover { background: #dfe8e6; color: var(--ink); }
+    .btn.ghost:active { background: #d3dedc; transform: translateY(1px); }
+    .btn.danger:hover { background: #f3e4e2; }
+    .btn.danger:active { background: #ead5d2; transform: translateY(1px); }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .field input[type="text"] {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--surface);
+      font-weight: 400;
+    }
+
+    .field input[type="range"] {
+      width: 100%;
+      min-height: 44px;
+      accent-color: var(--on);
+    }
+
+    .hint { color: var(--muted); font-weight: 400; font-size: 15px; }
+    .error { color: var(--danger); font-weight: 500; font-size: 15px; }
+
+    .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .choice {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 10px;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .choice.on { background: var(--lit); color: var(--ink); }
+    .choice input { width: 18px; height: 18px; margin: 0; accent-color: var(--on); }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .filters label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    select {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 40px 0 14px;
+      border: 0;
+      border-radius: 12px;
+      appearance: none;
+      background-color: #0e3f3c;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23f4faf8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+        var(--fill);
+      background-repeat: no-repeat;
+      background-position: right 16px center, center;
+      background-size: 12px 8px, cover;
+      color: var(--paper);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    select:hover { filter: brightness(1.14); }
+    select:active { filter: brightness(0.84); }
+
+    .plus {
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      border: 0;
+      border-radius: 50%;
+      background-color: #0e3f3c;
+      background-image: var(--fill);
+      background-position: center;
+      background-size: cover;
+      color: var(--paper);
+      box-shadow: 0 8px 18px rgb(27 69 66 / 28%);
+      cursor: pointer;
+    }
+
+    .plus:hover { filter: brightness(1.14); }
+    .plus:active { filter: brightness(0.84); transform: translateY(1px); }
+
+    .shelf {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      margin: 0 -16px -16px;
+      padding: 8px 10px;
+      border-radius: 0 0 16px 16px;
+      background: #fff;
+      box-shadow: 0 -8px 18px rgb(27 69 66 / 12%);
+    }
+
+    .shelf button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .shelf button:not(.on):hover { background: #dfe8e6; }
+    .shelf button:not(.on):active { background: #d3dedc; transform: translateY(1px); }
+
+    .shelf button.on {
+      background-color: #0e3f3c;
+      background-image: var(--fill);
+      background-position: center;
+      background-size: cover;
+      color: var(--paper);
+      font-weight: 600;
+    }
+
+    .shelf button.on:hover { filter: brightness(1.14); }
+    .shelf button.on:active { filter: brightness(0.84); transform: translateY(1px); }
+
+    .block-title {
+      font-family: var(--cond);
+      font-weight: 600;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .empty p { color: var(--muted); }
+
+    @media (max-width: 760px) {
+      .colors { grid-template-columns: 1fr 1fr; }
+      .pair { grid-template-columns: 1fr; }
+      .stage { max-width: 390px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header class="mast">
+      <h1>Атолл</h1>
+      <p>Набор частей экрана. Это отдельный лист, не страница приложения. Образцы слева имеют ширину 390&nbsp;px и цвета телефона.</p>
+    </header>
+
+    <section class="colors" aria-label="Поверхности">
+      <div class="swatch edge" style="background:#d5e1dc;color:#1a2c30"><b>Вокруг</b><span>#d5e1dc</span></div>
+      <div class="swatch edge" style="background:#e7efec;color:#1a2c30"><b>Колонка</b><span>#e7efec</span></div>
+      <div class="swatch edge" style="background:#ffffff;color:#1a2c30"><b>Бумага</b><span>#ffffff</span></div>
+      <div class="swatch edge" style="background:#dceae6;color:#1a2c30"><b>Выбранное</b><span>#dceae6</span></div>
+      <div class="swatch" style="background:#1b4542;color:#f4faf8"><b>Включено</b><span>#1b4542</span></div>
+      <div class="swatch" style="background:#1a2c30;color:#f4faf8"><b>Текст</b><span>#1a2c30</span></div>
+      <div class="swatch" style="background:#3e5558;color:#f4faf8"><b>Подпись</b><span>#3e5558</span></div>
+      <div class="swatch" style="background:#9c3b32;color:#f4faf8"><b>Удаление</b><span>#9c3b32</span></div>
+    </section>
+
+    <section class="pair">
+      <div class="stage">
+        <div class="brand">
+          <button class="back" type="button">Назад</button>
+          <span style="flex:1"></span>
+          <img src="praktika-1/src/assets/images/mark.png" width="32" height="32" alt="">
+          <img src="praktika-1/src/assets/images/wordmark.svg" width="89" height="16" alt="Атолл">
+        </div>
+      </div>
+      <div class="note">
+        <h2>Шапка</h2>
+        <p>Знак 32&nbsp;px, слово высотой 16&nbsp;px. «Назад» только на вложенном экране. Цвет подписи #3e5558.</p>
+      </div>
+    </section>
+
+    <section class="pair">
+      <div class="stage stage-tight">
+        <p class="date">Четверг, 5 ноября</p>
+        <p class="home-name">Дом</p>
+        <p class="quiet">Проспект Вернадского, 78, Москва</p>
+        <p class="quiet">5 из 9 включено</p>
+        <p class="block-title">Устройства</p>
+      </div>
+      <div class="note">
+        <h2>Текст</h2>
+        <p>Имя дома — Sofia Sans Condensed 600, 34&nbsp;px. Заголовок блока — та же гарнитура, 20&nbsp;px. Имя ряда ниже — 23&nbsp;px. Дата, адрес и сводка — Sofia Sans 400, 16&nbsp;px.</p>
+      </div>
+    </section>
+
+    <section class="pair">
+      <div class="stage">
+        <div class="switcher" role="group" aria-label="Как смотреть дом">
+          <button class="mode on" type="button" data-view="types">По категориям</button>
+          <button class="mode" type="button" data-view="rooms">По комнатам</button>
+        </div>
+        <div class="row on" data-kind="types"><b>Свет</b><span>2 из 5 включено</span></div>
+        <div class="row" data-kind="types"><b>Розетка</b><span>0 из 1 включено</span></div>
+        <div class="row on" data-kind="rooms" hidden><b>Гостиная</b><span>3 из 4 включено</span></div>
+        <div class="row" data-kind="rooms" hidden><b>Прихожая</b><span>0 из 1 включено</span></div>
+      </div>
+      <div class="note">
+        <h2>Ряды</h2>
+        <p>Высота не ниже 72&nbsp;px, скругление 16&nbsp;px, интервал 8&nbsp;px. Включённый ряд темнее и светлеет при наведении. Спокойный ряд белый, при наведении #dfe8e6, при нажатии #d3dedc.</p>
+      </div>
+    </section>
+
+    <section class="pair">
+      <div class="stage">
+        <div class="item">
+          <span class="grow">
+            <b>Торшер</b>
+            <span class="fact live" id="lamp-fact">Яркость 62%</span>
+          </span>
+          <button class="switch on" type="button" id="lamp" aria-pressed="true" aria-label="Выключить «Торшер»"><i></i></button>
+        </div>
+        <div class="item">
+          <span class="grow">
+            <b>Датчик климата</b>
+            <span class="fact live">Температура 23°</span>
+            <span class="fact live">Влажность 46%</span>
+          </span>
+          <button class="switch on frozen" type="button" aria-pressed="true" aria-label="Выключить «Датчик климата»"><i></i></button>
+        </div>
+      </div>
+      <div class="note">
+        <h2>Тумблер</h2>
+        <p>44 на 26&nbsp;px. Включённое состояние #1b4542. У датчика в строке два факта. Тумблер торшера можно переключить, датчик на листе только показывает вид.</p>
+      </div>
+    </section>
+
+    <section class="pair">
+      <div class="stage stage-tight">
+        <div class="states">
+          <div><button class="btn primary frozen" type="button">Сохранить</button><span class="state-name">Покой</span></div>
+          <div><button class="btn primary hover frozen" type="button">Сохранить</button><span class="state-name">Наведение</span></div>
+          <div><button class="btn primary active frozen" type="button">Сохранить</button><span class="state-name">Нажатие</span></div>
+        </div>
+        <div class="states">
+          <div><button class="btn ghost frozen" type="button">Отмена</button><span class="state-name">Покой</span></div>
+          <div><button class="btn ghost hover frozen" type="button">Отмена</button><span class="state-name">Наведение</span></div>
+          <div><button class="btn ghost active frozen" type="button">Отмена</button><span class="state-name">Нажатие</span></div>
+        </div>
+        <div class="states">
+          <div><button class="btn danger frozen" type="button">Удалить</button><span class="state-name">Покой</span></div>
+          <div><button class="btn danger hover frozen" type="button">Удалить</button><span class="state-name">Наведение</span></div>
+          <div><button class="btn danger active frozen" type="button">Удалить</button><span class="state-name">Нажатие</span></div>
+        </div>
+        <div class="live">
+          <button class="btn primary" type="button">Сохранить</button>
+          <button class="btn ghost" type="button">Отмена</button>
+          <button class="btn danger" type="button">Удалить</button>
+        </div>
+      </div>
+      <div class="note">
+        <h2>Кнопки</h2>
+        <p>Высота 44&nbsp;px, скругление 10&nbsp;px. Тёмная кнопка светлеет при наведении и темнеет со сдвигом на 1&nbsp;px при нажатии. Светлая получает заливку #dfe8e6 и #d3dedc. Удаление — текст #9c3b32. Нижний ряд можно нажать.</p>
+      </div>
+    </section>
+
+    <section class="pair">
+      <form class="stage stage-tight" id="sample-form">
+        <label class="field" for="kit-name">
+          Название
+          <input id="kit-name" type="text" value="Ла" maxlength="40" aria-invalid="true" aria-describedby="kit-name-hint">
+          <span class="error" id="kit-name-hint">Минимум 3 символа</span>
+        </label>
+        <label class="field" for="kit-level">
+          Яркость
+          <input id="kit-level" type="range" min="1" max="100" value="62">
+          <span class="hint" id="kit-level-hint">62%</span>
+        </label>
+        <div class="choices" role="radiogroup" aria-label="Комната">
+          <label class="choice on"><input type="radio" name="room" value="living" checked>Гостиная</label>
+          <label class="choice"><input type="radio" name="room" value="bedroom">Спальня</label>
+          <label class="choice"><input type="radio" name="room" value="kitchen">Кухня</label>
+        </div>
+        <div class="filters">
+          <label>Комната
+            <select aria-label="Фильтр комнаты">
+              <option>Все комнаты</option>
+              <option>Гостиная</option>
+              <option>Спальня</option>
+            </select>
+          </label>
+          <label>Тип
+            <select aria-label="Фильтр типа">
+              <option>Все типы</option>
+              <option>Свет</option>
+              <option>Климат</option>
+            </select>
+          </label>
+        </div>
+      </form>
+      <div class="note">
+        <h2>Поля</h2>
+        <p>Поле белое, без обводки, высота 48&nbsp;px. Ошибка — #9c3b32. Выбранная комната залита #dceae6. Фильтры списка тёмные, как включённая кнопка. Имя короче 3 символов показывает ошибку.</p>
+      </div>
+    </section>
+
+    <section class="pair">
+      <div class="stage">
+        <button class="plus" type="button" aria-label="Добавить">
+          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+            <path d="M11 3v16M3 11h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <div class="empty">
+          <p class="block-title">В квартире пусто</p>
+          <p>Добавьте первое устройство — оно сохранится в этом браузере.</p>
+        </div>
+        <div class="shelf" role="tablist" aria-label="Разделы">
+          <button class="on" type="button" role="tab" aria-selected="true">Обзор</button>
+          <button type="button" role="tab" aria-selected="false">Устройства</button>
+          <button type="button" role="tab" aria-selected="false">Сценарии</button>
+        </div>
+      </div>
+      <div class="note">
+        <h2>Низ экрана</h2>
+        <p>Плюс — круг 56&nbsp;px. Полка вкладок белая, с тенью вверх. Активный раздел тёмный. На листе вкладки только переключают вид, никуда не ведут.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const lamp = document.getElementById("lamp");
+    const lampFact = document.getElementById("lamp-fact");
+    lamp.addEventListener("click", () => {
+      const on = lamp.getAttribute("aria-pressed") !== "true";
+      lamp.setAttribute("aria-pressed", String(on));
+      lamp.classList.toggle("on", on);
+      lamp.setAttribute("aria-label", on ? "Выключить «Торшер»" : "Включить «Торшер»");
+      lampFact.textContent = on ? "Яркость 62%" : "Выключен";
+      lampFact.classList.toggle("live", on);
+    });
+
+    document.querySelectorAll("[data-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const view = button.dataset.view;
+        document.querySelectorAll("[data-view]").forEach((item) => {
+          item.classList.toggle("on", item === button);
+        });
+        document.querySelectorAll("[data-kind]").forEach((row) => {
+          row.hidden = row.dataset.kind !== view;
+        });
+      });
+    });
+
+    const name = document.getElementById("kit-name");
+    const nameHint = document.getElementById("kit-name-hint");
+    name.addEventListener("input", () => {
+      const length = name.value.trim().length;
+      const bad = length < 3;
+      name.setAttribute("aria-invalid", String(bad));
+      nameHint.className = bad ? "error" : "hint";
+      nameHint.textContent = bad ? "Минимум 3 символа" : "Длина " + length + " из 40";
+    });
+
+    const level = document.getElementById("kit-level");
+    const levelHint = document.getElementById("kit-level-hint");
+    level.addEventListener("input", () => {
+      levelHint.textContent = level.value + "%";
+    });
+
+    document.querySelectorAll(".choice input").forEach((input) => {
+      input.addEventListener("change", () => {
+        document.querySelectorAll(".choice").forEach((label) => {
+          label.classList.toggle("on", label.querySelector("input").checked);
+        });
+      });
+    });
+
+    document.querySelectorAll(".shelf button").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".shelf button").forEach((item) => {
+          const on = item === tab;
+          item.classList.toggle("on", on);
+          item.setAttribute("aria-selected", String(on));
+        });
+      });
+    });
+  </script>
+</body>
+</html>

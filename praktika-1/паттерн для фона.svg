@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_Слой_2" data-name="Слой 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 394.67 651.13">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: url(#_Новый_узор_2);
+      }
+
+      .cls-3 {
+        fill: #d5e1dc;
+      }
+    </style>
+    <pattern id="_Новый_узор_2" data-name="Новый узор 2" x="0" y="0" width="145.59" height="147.24" patternTransform="translate(618.78 -1114)" patternUnits="userSpaceOnUse" viewBox="0 0 145.59 147.24">
+      <g>
+        <rect class="cls-1" width="145.59" height="147.24"/>
+        <path class="cls-3" d="M53.51.13c6.97-3.49,21.93,62.81,30.22,69.04s50.67-37.04,60.74-28.74-51.26,37.33-50.96,45.93,37.33,56.3,32,58.96c-5.33,2.67-43.26-48.59-49.48-48.3-6.22.3-42.37,53.33-51.85,50.07s40.59-51.26,36.44-57.48S-3.67,79.84.18,71.24s63.11,11.26,66.37,5.63C69.81,71.24,44.03,4.87,53.51.13Z"/>
+      </g>
+    </pattern>
+  </defs>
+  <g id="_Слой_1-2" data-name="Слой 1">
+    <rect class="cls-2" width="394.67" height="651.13"/>
+  </g>
+</svg>
