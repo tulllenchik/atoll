@@ -1,8 +1,21 @@
-praktika-1/node_modules/
-praktika-1/dist/
+node_modules
+dist
+dist-ssr
+*.local
+
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 .cursor/
 ~$*
-
 *.pdf
 шаблон_для_курсача.docx
+Отчет Атолл.docx
+Курсовой проект Атолл.html
