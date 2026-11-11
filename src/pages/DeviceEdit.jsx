@@ -42,6 +42,7 @@ export default function DeviceEdit() {
                 room: existing.room,
                 type: existing.type,
                 on: existing.on,
+                locked: existing.locked,
                 level: existing.level,
                 humidity: existing.humidity,
               }
@@ -56,7 +57,7 @@ export default function DeviceEdit() {
           Название — от 3 символов, заметка — от 10. Комната и тип обязательны. У света, климата и штор можно задать
           уровень сразу.
         </p>
-        <p>Замок во включённом состоянии считается закрытым. Розетка просто подаёт или снимает питание.</p>
+        <p>У замка три состояния: закрыт, открыт и отключен. Розетка подаёт или снимает питание.</p>
         <Link to={existing ? `/devices/${existing.id}` : "/devices"} className="btn btn-ghost">
           Отмена
         </Link>

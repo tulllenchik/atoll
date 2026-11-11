@@ -1,143 +1,97 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { SCENES } from "../lib/home";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { applyWeather, demoMode, fetchHome, fetchWeather } from "../lib/api";
+import { lockPatch, SCENES, withLockBolt } from "../lib/home";
 
-const STORAGE_KEY = "atrium-home";
-const MIGRATION_KEY = "atrium-home-migration";
-
-const SEED_DEVICES = [
-  {
-    id: "lamp-floor",
-    name: "Торшер",
-    room: "living",
-    type: "light",
-    note: "Стоит у дивана и даёт тёплый свет для вечера.",
-    on: true,
-    level: 62,
-  },
-  {
-    id: "lamp-main",
-    name: "Люстра",
-    room: "living",
-    type: "light",
-    note: "Основной свет гостиной, четыре лампы над столом.",
-    on: false,
-    level: 80,
-  },
-  {
-    id: "curtains",
-    name: "Шторы",
-    room: "living",
-    type: "curtain",
-    note: "Плотные шторы на окно во двор. Ноль — полностью закрыты.",
-    on: true,
-    level: 20,
-  },
-  {
-    id: "ac",
-    name: "Кондиционер",
-    room: "bedroom",
-    type: "climate",
-    note: "Держит температуру в спальне, когда дома кто-то есть.",
-    on: true,
-    level: 22,
-  },
-  {
-    id: "climate-sensor",
-    name: "Датчик климата",
-    room: "living",
-    type: "climate",
-    note: "Стоит в гостиной и показывает температуру и влажность. Показания только считываются.",
-    on: true,
-    level: 23,
-    humidity: 46,
-  },
-  {
-    id: "bed-light",
-    name: "Бра",
-    room: "bedroom",
-    type: "light",
-    note: "Два бра по сторонам кровати, свет не бьёт в глаза.",
-    on: false,
-    level: 35,
-  },
-  {
-    id: "kitchen-light",
-    name: "Свет кухни",
-    room: "kitchen",
-    type: "light",
-    note: "Линейный свет над столешницей и плитой.",
-    on: true,
-    level: 90,
-  },
-  {
-    id: "kettle",
-    name: "Розетка у стола",
-    room: "kitchen",
-    type: "plug",
-    note: "Чайник и ночник. Выключается сценарием «Никого нет».",
-    on: false,
-    level: 0,
-  },
-  {
-    id: "hall-light",
-    name: "Свет в прихожей",
-    room: "hall",
-    type: "light",
-    note: "Подсветка у двери и зеркала.",
-    on: false,
-    level: 70,
-  },
-  {
-    id: "lock",
-    name: "Входной замок",
-    room: "hall",
-    type: "lock",
-    note: "Электронный замок входной двери. Включённое состояние — закрыт.",
-    on: true,
-    level: 0,
-  },
-];
+const STORAGE_KEY = "atoll-home-v2";
 
 const HomeContext = createContext(null);
 
-function withClimateSensor(devices) {
-  if (localStorage.getItem(MIGRATION_KEY) === "1") return devices;
-  localStorage.setItem(MIGRATION_KEY, "1");
-  if (devices.some((device) => device.id === "climate-sensor")) return devices;
-  const sensor = SEED_DEVICES.find((device) => device.id === "climate-sensor");
-  return [...devices, sensor];
-}
-
-function freshState() {
-  return { devices: withClimateSensor(SEED_DEVICES), scenes: SCENES, sceneId: null };
-}
-
-function loadState() {
+function readCache() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return freshState();
+    if (!raw) return null;
     const parsed = JSON.parse(raw);
-    if (!parsed || !Array.isArray(parsed.devices)) return freshState();
+    if (!parsed || !Array.isArray(parsed.devices)) return null;
     return {
-      devices: withClimateSensor(parsed.devices),
+      devices: withLockBolt(parsed.devices),
       scenes: Array.isArray(parsed.scenes) ? parsed.scenes : SCENES,
       sceneId: parsed.sceneId ?? null,
     };
   } catch {
-    return freshState();
+    return null;
   }
 }
 
 export function HomeProvider({ children }) {
-  const [state, setState] = useState(loadState);
+  const [state, setState] = useState({ devices: [], scenes: [], sceneId: null });
+  const [status, setStatus] = useState("loading");
+  const [weather, setWeather] = useState(null);
+
+  const persist = useCallback((next) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    if (status === "success" || status === "empty") persist(state);
+  }, [state, status, persist]);
+
+  const load = useCallback(async () => {
+    setStatus("loading");
+    const demo = demoMode();
+
+    if (demo === "error") {
+      setWeather(null);
+      setState({ devices: [], scenes: [], sceneId: null });
+      setStatus("error");
+      return;
+    }
+
+    try {
+      const home = demo === "empty" ? { devices: [], scenes: [] } : await fetchHome();
+      let nextWeather = null;
+      try {
+        nextWeather = await fetchWeather();
+      } catch {
+        nextWeather = null;
+      }
+
+      const cached = demo === "empty" ? null : readCache();
+      let devices = cached?.devices ?? home.devices;
+      const scenes = cached?.scenes ?? home.scenes;
+      const sceneId = cached?.sceneId ?? null;
+        devices = applyWeather(withLockBolt(devices), nextWeather);
+
+      setWeather(nextWeather);
+      setState({ devices, scenes, sceneId });
+      setStatus(devices.length === 0 ? "empty" : "success");
+    } catch {
+      const cached = readCache();
+      if (cached) {
+        setState(cached);
+        setWeather(null);
+        setStatus(cached.devices.length === 0 ? "empty" : "success");
+        return;
+      }
+      setWeather(null);
+      setState({ devices: [], scenes: [], sceneId: null });
+      setStatus("error");
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  useEffect(() => {
+    if (status === "loading" || status === "error") return;
+    const next = state.devices.length === 0 ? "empty" : "success";
+    if (next !== status) setStatus(next);
+  }, [state.devices.length, status]);
 
   function addDevice(data) {
     const device = { id: crypto.randomUUID(), ...data };
     setState((prev) => ({ ...prev, sceneId: null, devices: [device, ...prev.devices] }));
+    setStatus("success");
     return device;
   }
 
@@ -149,24 +103,39 @@ export function HomeProvider({ children }) {
         if (device.id !== id) return device;
         const next = { ...device, ...data };
         if (data.humidity == null) delete next.humidity;
+        if (next.type !== "lock") delete next.locked;
         return next;
       }),
     }));
   }
 
   function deleteDevice(id) {
-    setState((prev) => ({
-      ...prev,
-      sceneId: null,
-      devices: prev.devices.filter((device) => device.id !== id),
-    }));
+    setState((prev) => {
+      const devices = prev.devices.filter((device) => device.id !== id);
+      return { ...prev, sceneId: null, devices };
+    });
   }
 
   function toggleDevice(id) {
     setState((prev) => ({
       ...prev,
       sceneId: null,
-      devices: prev.devices.map((device) => (device.id === id ? { ...device, on: !device.on } : device)),
+      devices: prev.devices.map((device) => {
+        if (device.id !== id) return device;
+        if (device.type === "lock") {
+          if (device.on) return { ...device, on: false };
+          return { ...device, on: true, locked: device.locked !== false };
+        }
+        return { ...device, on: !device.on };
+      }),
+    }));
+  }
+
+  function setLockMode(id, mode) {
+    setState((prev) => ({
+      ...prev,
+      sceneId: null,
+      devices: prev.devices.map((device) => (device.id === id ? { ...device, ...lockPatch(mode) } : device)),
     }));
   }
 
@@ -223,10 +192,14 @@ export function HomeProvider({ children }) {
     devices: state.devices,
     scenes: state.scenes ?? SCENES,
     sceneId: state.sceneId,
+    status,
+    weather,
+    reload: load,
     addDevice,
     updateDevice,
     deleteDevice,
     toggleDevice,
+    setLockMode,
     setLevel,
     applyScene,
     addScene,

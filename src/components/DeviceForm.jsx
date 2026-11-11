@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ROOMS, TYPES, defaultLevel, formatLevel, hasLevel, isSensor, levelRange } from "../lib/home";
+import { ROOMS, TYPES, defaultLevel, formatLevel, hasLevel, isSensor, levelRange, lockMode, lockPatch, LOCK_MODES } from "../lib/home";
 import styles from "./DeviceForm.module.css";
 
 const EMPTY = {
@@ -62,9 +62,12 @@ export default function DeviceForm({ initial, submitLabel, onSubmit }) {
     const { name, value, type, checked } = event.target;
     setValues((prev) => {
       if (name === "on") return { ...prev, on: checked };
+      if (name === "lockMode") return { ...prev, ...lockPatch(value) };
       if (name === "type") {
         const next = { ...prev, type: value, level: defaultLevel(value) };
         if (value !== "climate") delete next.humidity;
+        if (value === "lock") return { ...next, ...lockPatch("closed") };
+        delete next.locked;
         return next;
       }
       if (name === "level") return { ...prev, level: Number(value) };
@@ -89,6 +92,7 @@ export default function DeviceForm({ initial, submitLabel, onSubmit }) {
     }
 
     const sensor = values.type === "climate" && isSensor(values);
+    const lock = values.type === "lock";
     onSubmit({
       name: values.name.trim(),
       note: values.note.trim(),
@@ -97,10 +101,9 @@ export default function DeviceForm({ initial, submitLabel, onSubmit }) {
       on: sensor ? true : values.on,
       level: sensor ? values.level : hasLevel(values.type) ? Number(values.level) : 0,
       ...(sensor ? { humidity: values.humidity } : {}),
+      ...(lock ? { locked: values.locked !== false } : {}),
     });
   }
-
-  const switchLabel = values.type === "lock" ? "Сразу закрыть" : "Сразу включить";
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
@@ -182,10 +185,20 @@ export default function DeviceForm({ initial, submitLabel, onSubmit }) {
         </label>
       )}
 
-      {!sensor && (
+      {values.type === "lock" && (
+        <ChoiceGroup
+          legend="Состояние замка"
+          name="lockMode"
+          value={lockMode(values)}
+          options={LOCK_MODES.map((mode) => ({ value: mode.id, label: mode.label }))}
+          onChange={update}
+        />
+      )}
+
+      {!sensor && values.type !== "lock" && (
         <label className={styles.check}>
           <input type="checkbox" name="on" checked={values.on} onChange={update} />
-          {switchLabel}
+          Сразу включить
         </label>
       )}
 

@@ -23,7 +23,15 @@ export default function DeviceList({ devices, onToggle }) {
           </Link>
           <Toggle
             pressed={device.on}
-            label={device.on ? `Выключить «${device.name}»` : `Включить «${device.name}»`}
+            label={
+              device.type === "lock"
+                ? device.on
+                  ? `Отключить «${device.name}»`
+                  : `Включить «${device.name}»`
+                : device.on
+                  ? `Выключить «${device.name}»`
+                  : `Включить «${device.name}»`
+            }
             onClick={() => onToggle(device.id)}
           />
         </li>
