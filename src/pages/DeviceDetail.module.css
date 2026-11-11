@@ -75,6 +75,55 @@
   filter: brightness(0.84);
 }
 
+.lockModes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  width: 100%;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.mode,
+.modeOn {
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter 160ms ease, background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.mode:hover {
+  background: #dfe8e6;
+  color: var(--ink);
+}
+
+.mode:active,
+.modeOn:active {
+  transform: translateY(1px);
+}
+
+.modeOn {
+  background-color: #0e3f3c;
+  background-image: url("../assets/images/button-fill.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #f4faf8;
+}
+
+.modeOn:hover {
+  filter: brightness(1.14);
+}
+
+.modeOn:active {
+  filter: brightness(0.84);
+}
+
 .readout {
   display: grid;
   grid-template-columns: 1fr 1fr;

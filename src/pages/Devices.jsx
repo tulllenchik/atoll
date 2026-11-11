@@ -33,15 +33,13 @@ export default function Devices() {
   }
 
   const heading = room !== "all" ? ROOMS[room] : type !== "all" ? TYPES[type] : "Устройства";
-  const counted = visible.filter((device) => (type === "lock" ? true : device.type !== "lock"));
-  const on = counted.filter((device) => device.on).length;
-  const word = type === "lock" ? "закрыто" : "включено";
+  const on = visible.filter((device) => device.on).length;
 
   return (
     <div className={`page ${styles.page}`}>
       <header className={styles.intro}>
         <h1>{heading}</h1>
-        {devices.length > 0 && <p>{countLine(on, counted.length, word)}</p>}
+        {devices.length > 0 && <p>{countLine(on, visible.length)}</p>}
       </header>
 
       <label className={styles.search}>
@@ -82,7 +80,7 @@ export default function Devices() {
       {devices.length === 0 && (
         <div className={styles.empty}>
           <h2>В квартире пусто</h2>
-          <p>Добавьте первое устройство — оно сохранится в этом браузере.</p>
+          <p>Каталог квартиры пуст. Первое устройство сохранится в этом браузере.</p>
         </div>
       )}
 

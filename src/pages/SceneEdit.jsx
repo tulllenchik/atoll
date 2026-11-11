@@ -2,13 +2,16 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Toggle from "../components/Toggle";
 import { useHome } from "../context/HomeContext";
-import { ROOMS, TYPES, defaultLevel, hasLevel, isSensor, levelRange, statusText } from "../lib/home";
+import { LOCK_MODES, ROOMS, TYPES, defaultLevel, hasLevel, isSensor, levelRange, lockMode, lockPatch, statusText } from "../lib/home";
 import styles from "./SceneEdit.module.css";
 
 function includedFrom(scene) {
   if (!scene) return {};
   return Object.fromEntries(
-    Object.entries(scene.patch).map(([id, patch]) => [id, { on: Boolean(patch.on), level: patch.level ?? 0 }]),
+    Object.entries(scene.patch).map(([id, patch]) => [
+      id,
+      { on: Boolean(patch.on), level: patch.level ?? 0, locked: patch.locked },
+    ]),
   );
 }
 
@@ -70,6 +73,7 @@ function SceneEditor() {
         [device.id]: {
           on: device.type === "curtain" ? device.level > 0 : device.on,
           level: hasLevel(device.type) ? device.level : 0,
+          ...(device.type === "lock" ? { locked: device.locked !== false } : {}),
         },
       };
     });
@@ -121,6 +125,7 @@ function SceneEditor() {
       if (!device) continue;
       const entry = { on: value.on };
       if (hasLevel(device.type)) entry.level = value.level;
+      if (device.type === "lock") entry.locked = value.locked !== false;
       patch[deviceId] = entry;
     }
 
@@ -192,12 +197,33 @@ function SceneEditor() {
                     </span>
                   </label>
                   <div className={styles.controls}>
-                    <span>{statusText({ ...device, on: value.on, level: value.level })}</span>
-                    <Toggle
-                      pressed={value.on}
-                      label={value.on ? `Выключить «${device.name}» в сценарии` : `Включить «${device.name}» в сценарии`}
-                      onClick={() => setOn(device, !value.on)}
-                    />
+                    <span>{statusText({ ...device, on: value.on, level: value.level, locked: value.locked })}</span>
+                    {device.type === "lock" ? (
+                      <div className={styles.lockModes} role="group" aria-label={`Состояние «${device.name}» в сценарии`}>
+                        {LOCK_MODES.map((mode) => (
+                          <button
+                            key={mode.id}
+                            type="button"
+                            className={lockMode({ on: value.on, locked: value.locked }) === mode.id ? styles.modeOn : styles.mode}
+                            aria-pressed={lockMode({ on: value.on, locked: value.locked }) === mode.id}
+                            onClick={() =>
+                              setIncluded((prev) => ({
+                                ...prev,
+                                [device.id]: { ...prev[device.id], ...lockPatch(mode.id) },
+                              }))
+                            }
+                          >
+                            {mode.label}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <Toggle
+                        pressed={value.on}
+                        label={value.on ? `Выключить «${device.name}» в сценарии` : `Включить «${device.name}» в сценарии`}
+                        onClick={() => setOn(device, !value.on)}
+                      />
+                    )}
                     {range && (
                       <label className={styles.level}>
                         {range.label}

@@ -1,0 +1,153 @@
+{
+  "address": "Проспект Вернадского, 78, Москва",
+  "devices": [
+    {
+      "id": "lamp-floor",
+      "name": "Торшер",
+      "room": "living",
+      "type": "light",
+      "note": "Стоит у дивана и даёт тёплый свет для вечера.",
+      "on": true,
+      "level": 62
+    },
+    {
+      "id": "lamp-main",
+      "name": "Люстра",
+      "room": "living",
+      "type": "light",
+      "note": "Основной свет гостиной, четыре лампы над столом.",
+      "on": false,
+      "level": 80
+    },
+    {
+      "id": "curtains",
+      "name": "Шторы",
+      "room": "living",
+      "type": "curtain",
+      "note": "Плотные шторы на окно во двор. Ноль — полностью закрыты.",
+      "on": true,
+      "level": 20
+    },
+    {
+      "id": "ac",
+      "name": "Кондиционер",
+      "room": "bedroom",
+      "type": "climate",
+      "note": "Держит температуру в спальне, когда дома кто-то есть.",
+      "on": true,
+      "level": 22
+    },
+    {
+      "id": "climate-sensor",
+      "name": "Датчик климата",
+      "room": "living",
+      "type": "climate",
+      "note": "Стоит в гостиной. Температура и влажность сверяются с прогнозом у дома.",
+      "on": true,
+      "level": 23,
+      "humidity": 46
+    },
+    {
+      "id": "bed-light",
+      "name": "Бра",
+      "room": "bedroom",
+      "type": "light",
+      "note": "Два бра по сторонам кровати, свет не бьёт в глаза.",
+      "on": false,
+      "level": 35
+    },
+    {
+      "id": "kitchen-light",
+      "name": "Свет кухни",
+      "room": "kitchen",
+      "type": "light",
+      "note": "Линейный свет над столешницей и плитой.",
+      "on": true,
+      "level": 90
+    },
+    {
+      "id": "kettle",
+      "name": "Розетка у стола",
+      "room": "kitchen",
+      "type": "plug",
+      "note": "Чайник и ночник. Выключается сценарием «Никого нет».",
+      "on": false,
+      "level": 0
+    },
+    {
+      "id": "hall-light",
+      "name": "Свет в прихожей",
+      "room": "hall",
+      "type": "light",
+      "note": "Подсветка у двери и зеркала.",
+      "on": false,
+      "level": 70
+    },
+    {
+      "id": "lock",
+      "name": "Входной замок",
+      "room": "hall",
+      "type": "lock",
+      "note": "Электронный замок входной двери. Три состояния: закрыт, открыт, отключен.",
+      "on": true,
+      "locked": true,
+      "level": 0
+    }
+  ],
+  "scenes": [
+    {
+      "id": "evening",
+      "title": "Вечер",
+      "text": "Тёплый свет у дивана, шторы почти закрыты, кухня только для ориентира.",
+      "patch": {
+        "lamp-floor": { "on": true, "level": 48 },
+        "lamp-main": { "on": false },
+        "curtains": { "on": true, "level": 12 },
+        "kitchen-light": { "on": true, "level": 28 },
+        "bed-light": { "on": true, "level": 22 },
+        "kettle": { "on": false }
+      }
+    },
+    {
+      "id": "morning",
+      "title": "Утро",
+      "text": "Шторы открываются, кухня и прихожая загораются, люстра включается.",
+      "patch": {
+        "curtains": { "on": true, "level": 100 },
+        "kitchen-light": { "on": true, "level": 100 },
+        "hall-light": { "on": true, "level": 80 },
+        "lamp-main": { "on": true, "level": 75 },
+        "lamp-floor": { "on": false },
+        "ac": { "on": true, "level": 22 }
+      }
+    },
+    {
+      "id": "cinema",
+      "title": "Кино",
+      "text": "Люстра гаснет, торшер едва тёплый, шторы закрыты полностью.",
+      "patch": {
+        "lamp-main": { "on": false },
+        "lamp-floor": { "on": true, "level": 12 },
+        "curtains": { "on": false, "level": 0 },
+        "kitchen-light": { "on": false },
+        "hall-light": { "on": false }
+      }
+    },
+    {
+      "id": "away",
+      "title": "Никого нет",
+      "text": "Свет и розетки выключаются, шторы закрываются, замок остаётся закрытым.",
+      "patch": {
+        "lamp-floor": { "on": false },
+        "lamp-main": { "on": false },
+        "bed-light": { "on": false },
+        "kitchen-light": { "on": false },
+        "hall-light": { "on": false },
+        "kettle": { "on": false },
+        "ac": { "on": false },
+        "curtains": { "on": false, "level": 0 },
+        "lock": { "on": true, "locked": true }
+      }
+    }
+  ]
+}

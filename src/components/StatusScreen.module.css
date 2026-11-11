@@ -1,0 +1,21 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 40vh;
+  padding-top: 12px;
+}
+
+.screen h1 {
+  font-family: var(--cond);
+  font-weight: 600;
+  font-size: 2.1rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.screen p {
+  max-width: 28ch;
+  color: var(--muted);
+}

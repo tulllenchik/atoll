@@ -65,7 +65,7 @@ export const SCENES = [
       kettle: { on: false },
       ac: { on: false },
       curtains: { on: false, level: 0 },
-      lock: { on: true },
+        lock: { on: true, locked: true },
     },
   },
 ];
@@ -78,8 +78,37 @@ export function greeting(date = new Date()) {
   return "Добрый вечер";
 }
 
+export const LOCK_MODES = [
+  { id: "closed", label: "Закрыт" },
+  { id: "open", label: "Открыт" },
+  { id: "off", label: "Отключен" },
+];
+
 export function isSensor(device) {
   return typeof device?.humidity === "number";
+}
+
+export function lockMode(device) {
+  if (!device?.on) return "off";
+  return device.locked === false ? "open" : "closed";
+}
+
+export function lockPatch(mode) {
+  if (mode === "off") return { on: false };
+  if (mode === "open") return { on: true, locked: false };
+  return { on: true, locked: true };
+}
+
+export function withLockBolt(devices) {
+  return devices.map((device) => {
+    if (device.type !== "lock" || typeof device.locked === "boolean") return device;
+    if (device.on) return { ...device, locked: true };
+    return { ...device, on: true, locked: false };
+  });
+}
+
+export function lockNeedsAttention(device) {
+  return device.type === "lock" && (!device.on || device.locked === false);
 }
 
 export function hasLevel(type) {
@@ -111,7 +140,10 @@ export function statusText(device) {
     if (!device.on) return "Выключен";
     return `Температура ${device.level}° · Влажность ${device.humidity}%`;
   }
-  if (device.type === "lock") return device.on ? "Закрыт" : "Открыт";
+  if (device.type === "lock") {
+    if (!device.on) return "Отключен";
+    return device.locked === false ? "Открыт" : "Закрыт";
+  }
   if (device.type === "plug") return device.on ? "Питание есть" : "Без питания";
   if (device.type === "curtain") {
     if (!device.on || device.level === 0) return "Закрыты";
