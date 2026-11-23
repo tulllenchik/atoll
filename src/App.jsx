@@ -8,10 +8,12 @@ import Home from "./pages/Home";
 import SceneEdit from "./pages/SceneEdit";
 import Scenes from "./pages/Scenes";
 
+const basename = import.meta.env.BASE_URL.replace(/\/$/, "") || undefined;
+
 export default function App() {
   return (
     <HomeProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
